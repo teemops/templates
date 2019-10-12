@@ -35,13 +35,14 @@ Resources:
       ImageId: !Ref AMI
       InstanceType: !Ref InstanceType
       KeyName: !Ref KeyPair
-      # IamInstanceProfile: !Ref TopsEc2InstanceProfile
+      IamInstanceProfile: !Ref TopsEc2InstanceProfile
       SubnetId: !Ref Subnet
       SecurityGroupIds: 
         - !Ref SecurityGroup
       BlockDeviceMappings:
         - DeviceName: /dev/sda1
           Ebs:
+            VolumeType: gp2
             VolumeSize: !Ref RootVolumeSize
       Tags:
         - Key: Name
@@ -50,26 +51,26 @@ Resources:
           Value: !Ref AppId
         - Key: topscustomerid
           Value: !Ref CustomerId
-  # TopsEc2Role:
-  #   Type: AWS::IAM::Role
-  #   Properties:
-  #     ManagedPolicyArns:
-  #       - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
-  #     AssumeRolePolicyDocument:
-  #       Version: 2012-10-17
-  #       Statement:
-  #         - Effect: Allow
-  #           Principal:
-  #             Service:
-  #               - ec2.amazonaws.com
-  #               - ssm.amazonaws.com
-  #           Action:
-  #             - sts:AssumeRole
-  # TopsEc2InstanceProfile:
-  #   Type: AWS::IAM::InstanceProfile
-  #   Properties:
-  #     Roles:
-  #       - Ref: TopsEc2Role
+  TopsEc2Role:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+                - ssm.amazonaws.com
+            Action:
+              - sts:AssumeRole
+  TopsEc2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - Ref: TopsEc2Role
 Outputs:
   InstanceId:
     Description: EC2 InstanceId

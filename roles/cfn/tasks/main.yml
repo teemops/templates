@@ -1,0 +1,13 @@
+---
+
+- name: CFN Launch
+  cloudformation:
+    # aws_access_key: "{{ sts_role.sts_creds.access_key }}"
+    # aws_secret_key: "{{ sts_role.sts_creds.secret_key }}"
+    # security_token: "{{ sts_role.sts_creds.session_token }}"
+    stack_name: "{{stack_name}}"
+    state: "present"
+    region: "{{region}}"
+    template: "cloudformation/{{template}}"
+    template_parameters: "{{template_params}}"
+  register: cfn

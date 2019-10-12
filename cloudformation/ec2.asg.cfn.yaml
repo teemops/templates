@@ -1,0 +1,170 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Teemops EC2 Initial Launch Template
+Parameters:
+  AMI:
+    Description: EC2 AMI
+    Type: AWS::EC2::Image::Id
+  InstanceType:
+    Description: Amazon EC2 instance type
+    Type: String
+  RootVolumeSize:
+    Description: Root EBS Volume Size in GB
+    Type: Number
+  AppId:
+    Description: Teemops App ID
+    Type: String
+  AppName:
+    Description: Teemops App Name
+    Type: String
+  CustomerId:
+    Description: Teemops Customer ID
+    Type: String
+  KeyPair:
+    Description: EC2 KeyPair
+    Type: AWS::EC2::KeyPair::KeyName
+  Subnet:
+    Description: Subnet
+    Type: AWS::EC2::Subnet::Id
+  SecurityGroup:
+    Description: Security Group
+    Type: AWS::EC2::SecurityGroup::Id
+  UserDataScript:
+    Description: User Data Script for EC2
+    Type: String
+  Min:
+    Description: Min for ASG
+    Type: String
+    Default: "1"
+  Max:
+    Description: Max for ASG
+    Type: String
+    Default: "2"
+  HasALB:
+    Description: Has ALB or not
+    Type: String
+    AllowedValues: ['true', 'false']
+  HasPublicIp:
+    Description: ASG instances have Public IP
+    Type: String
+    AllowedValues: ['true', 'false']
+Conditions:
+  ConditionALB: !Equals [!Ref HasALB, 'true']
+Resources:
+  # TopsTopic:
+  #   Type: AWS::SNS::Topic
+  #   Properties:
+  #     Subscription:
+  #     - Endpoint: !Ref 'SNSEmail'
+  #       Protocol: email
+  TopsLaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties: 
+      AssociatePublicIpAddress: !Ref HasPublicIp
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          Ebs:
+            VolumeType: gp2
+            VolumeSize: !Ref RootVolumeSize
+      IamInstanceProfile: !Ref TopsEc2InstanceProfile
+      ImageId: !Ref AMI
+      InstanceMonitoring: true
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyPair
+      SecurityGroups: 
+        - !Ref SecurityGroup
+      UserData: !Base64
+        Fn::Join:
+        - ''
+        - ['#!/bin/bash -xe
+
+            ', 
+            'bash <(curl -s ',
+             !Ref UserDataScript,
+             ')']
+  TopsASG:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      AvailabilityZones: !GetAZs ''
+      LaunchConfigurationName: !Ref 'TopsLaunchConfig'
+      MinSize: !Ref Min
+      MaxSize: !Ref Max
+      # LoadBalancerNames: [!Ref 'TopsALB']
+      # NotificationConfigurations:
+      #   - TopicARN: !Ref 'TopsTopic'
+      #     NotificationTypes: ['autoscaling:EC2_INSTANCE_LAUNCH', 'autoscaling:EC2_INSTANCE_LAUNCH_ERROR',
+      #       'autoscaling:EC2_INSTANCE_TERMINATE', 'autoscaling:EC2_INSTANCE_TERMINATE_ERROR']
+    # CreationPolicy:
+    #   ResourceSignal:
+    #     Timeout: PT15M
+    #     Count: 1
+    UpdatePolicy:
+      AutoScalingRollingUpdate:
+        MinInstancesInService: 1
+        MaxBatchSize: 1
+        PauseTime: PT15M
+        WaitOnResourceSignals: false
+  TopsScaleUpPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      AdjustmentType: ChangeInCapacity
+      AutoScalingGroupName: !Ref 'TopsASG'
+      Cooldown: '60'
+      ScalingAdjustment: 1
+  TopsScaleDownPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      AdjustmentType: ChangeInCapacity
+      AutoScalingGroupName: !Ref 'TopsASG'
+      Cooldown: '60'
+      ScalingAdjustment: -1
+  CPUAlarmHigh:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Scale-up if CPU > 80% for 10 minutes
+      MetricName: CPUUtilization
+      Namespace: AWS/EC2
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 80
+      AlarmActions: [!Ref 'TopsScaleUpPolicy']
+      Dimensions:
+      - Name: AutoScalingGroupName
+        Value: !Ref 'TopsASG'
+      ComparisonOperator: GreaterThanThreshold
+  CPUAlarmLow:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Scale-down if CPU < 80% for 10 minutes
+      MetricName: CPUUtilization
+      Namespace: AWS/EC2
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 70
+      AlarmActions: [!Ref 'TopsScaleDownPolicy']
+      Dimensions:
+      - Name: AutoScalingGroupName
+        Value: !Ref 'TopsASG'
+      ComparisonOperator: LessThanThreshold
+  # TopsALB:
+  TopsEc2Role:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+                - ssm.amazonaws.com
+            Action:
+              - sts:AssumeRole
+  TopsEc2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - Ref: TopsEc2Role
