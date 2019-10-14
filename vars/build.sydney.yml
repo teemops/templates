@@ -8,4 +8,4 @@ params:
   GitRepo: https://github.com/teemops/core-api.git
   DeploymentPath: /srv/apps/teemops
   Language: node
-  ASGGroup: TestASGALBLaunch-TopsASG-152179QDDKYDA
+  ASGGroup: TestASGALBLaunch-TopsASG-1KFR5JJR95MDW

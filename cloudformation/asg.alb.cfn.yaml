@@ -89,7 +89,6 @@ Resources:
     Properties:
       VPCZoneIdentifier: !Ref Subnet
       LaunchConfigurationName: !Ref 'TopsLaunchConfig'
-      
       MinSize: !Ref Min
       MaxSize: !Ref Max
       TargetGroupARNs:
@@ -218,6 +217,7 @@ Resources:
     Properties:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
