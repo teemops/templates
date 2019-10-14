@@ -1,0 +1,11 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Teemops CodeBuild and Deploy with GIT Source
+Parameters:
+  GitRepo:
+    Description: Repo path
+    Type: String
+  DeploymentPath:
+    Description: Path where code will run
+    Type: String
+    Default: /var/www/html 
+Resources:

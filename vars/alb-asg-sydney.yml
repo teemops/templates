@@ -1,18 +1,20 @@
 ---
 
 region: ap-southeast-2
-template: asg.cfn.yaml
+template: asg.alb.cfn.yaml
 params:
   AMI: "ami-00a54827eb7ffcd3c"
   AppId: 123
-  AppName: TestASGLaunch2
+  AppName: TestASGALBLaunch
   CustomerId: 1
   InstanceType: t3.nano
   KeyPair: teemops-67
   RootVolumeSize: 50
   SecurityGroup: sg-ee958b8a
+  VPC: "vpc-e34cbe87"
   Subnet: "subnet-ea863e8e,subnet-578c2d21,subnet-0a1dcc53"
   UserDataScript: https://raw.githubusercontent.com/teemops/templates/master/stacks/php.sh
   Min: 1
   Max: 3
+  ALBSubnets: "subnet-ea863e8e,subnet-578c2d21,subnet-0a1dcc53"
   HasPublicIp: 'true'

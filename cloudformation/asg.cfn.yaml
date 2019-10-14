@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Teemops EC2 Initial Launch Template
+Description: Teemops ASG with no ALB
 Parameters:
   AMI:
     Description: EC2 AMI
@@ -23,8 +23,8 @@ Parameters:
     Description: EC2 KeyPair
     Type: AWS::EC2::KeyPair::KeyName
   Subnet:
-    Description: Subnet
-    Type: AWS::EC2::Subnet::Id
+    Description: Subnets
+    Type: List<AWS::EC2::Subnet::Id>
   SecurityGroup:
     Description: Security Group
     Type: AWS::EC2::SecurityGroup::Id
@@ -39,10 +39,6 @@ Parameters:
     Description: Max for ASG
     Type: String
     Default: "2"
-  HasALB:
-    Description: Has ALB or not
-    Type: String
-    AllowedValues: ['true', 'false']
   HasPublicIp:
     Description: ASG instances have Public IP
     Type: String
@@ -84,7 +80,7 @@ Resources:
   TopsASG:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
-      AvailabilityZones: !GetAZs ''
+      VPCZoneIdentifier: !Ref Subnet
       LaunchConfigurationName: !Ref 'TopsLaunchConfig'
       MinSize: !Ref Min
       MaxSize: !Ref Max
@@ -103,13 +99,6 @@ Resources:
         MaxBatchSize: 1
         PauseTime: PT15M
         WaitOnResourceSignals: false
-  TopsScaleUpPolicy:
-    Type: AWS::AutoScaling::ScalingPolicy
-    Properties:
-      AdjustmentType: ChangeInCapacity
-      AutoScalingGroupName: !Ref 'TopsASG'
-      Cooldown: '60'
-      ScalingAdjustment: 1
   TopsScaleDownPolicy:
     Type: AWS::AutoScaling::ScalingPolicy
     Properties:
@@ -147,7 +136,6 @@ Resources:
       - Name: AutoScalingGroupName
         Value: !Ref 'TopsASG'
       ComparisonOperator: LessThanThreshold
-  # TopsALB:
   TopsEc2Role:
     Type: AWS::IAM::Role
     Properties:
