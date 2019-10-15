@@ -12,7 +12,7 @@ params:
   RootVolumeSize: 50
   SecurityGroup: sg-ee958b8a
   Subnet: "subnet-ea863e8e,subnet-578c2d21,subnet-0a1dcc53"
-  UserDataScript: https://raw.githubusercontent.com/teemops/templates/master/stacks/php.sh
+  AppEnvironment: php
   Min: 1
   Max: 3
   HasPublicIp: 'true'

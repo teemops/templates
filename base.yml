@@ -1,0 +1,28 @@
+---
+
+- name: output test
+  hosts: localhost
+  become: false
+  connection: local
+
+  pre_tasks:
+    - debug: var=template
+
+- name: Build CFN stack
+  hosts: localhost
+  become: false
+  connection: local
+  vars:
+    customer: none
+
+  vars_files:
+    - vars/{{ template_name }}.yml
+    - vars/common.yml
+  # pre_tasks:
+  #   - name: Clear gathered facts from all currently targeted hosts
+  #     meta: clear_facts
+  #   - meta: clear_host_errors
+  #   - meta: reset_connection
+
+  roles:
+    - { role: cfn, stack_name: "{{params.AppName}}", template_params: "{{params}}" }

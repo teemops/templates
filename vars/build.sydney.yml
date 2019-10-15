@@ -5,7 +5,7 @@ template: code.build.cfn.yaml
 params:
   AppId: 123
   AppName: TestCBGitHub
-  GitRepo: https://github.com/teemops/core-api.git
+  GitRepo: https://github.com/teemops/phpawsapi.git
   DeploymentPath: /srv/apps/teemops
   Language: node
   ASGGroup: TestASGALBLaunch-TopsASG-1KFR5JJR95MDW

@@ -12,3 +12,4 @@ params:
   RootVolumeSize: 50
   SecurityGroup: sg-ee958b8a
   Subnet: subnet-ea863e8e
+  HasPublicIp: 'true'

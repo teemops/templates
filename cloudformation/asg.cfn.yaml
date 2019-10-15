@@ -157,3 +157,7 @@ Resources:
     Properties:
       Roles:
         - Ref: TopsEc2Role
+Outputs:
+  ASGGroupName:
+    Description: The Autoscaling group name created as part of the build
+    Value: !Ref TopsASG

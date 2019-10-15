@@ -37,6 +37,18 @@ example below:
 bash <(curl -s https://raw.githubusercontent.com/teemops/templates/master/stacks/php.sh)
 ```
 
+# Ansible playbook
+This is used for providing base configuration for Ubuntu Teemops managed EC2 instances.
+Teemops managed EC2 instances are ones that have preconfigured app environments (e.g. PHP, Node etc...)
+
+## Base OS config
+Purpose: Configures things like OS security, agents etc...
+Location
+base.yml
+
+## Application specific playbooks or tasks
+Purpose: Configure things like app environments
+
 # Other repos
 Teemops has a number of separate repositories that make up the entire application.
 * API: https://github.com/teemops/core-api

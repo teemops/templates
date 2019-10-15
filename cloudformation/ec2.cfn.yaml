@@ -28,6 +28,12 @@ Parameters:
   SecurityGroup:
     Description: Security Group
     Type: AWS::EC2::SecurityGroup::Id
+  HasPublicIp:
+    Description: ASG instances have Public IP
+    Type: String
+    AllowedValues: ['true', 'false']
+Conditions:
+  ConditionPublicIp: !Equals [!Ref HasPublicIp, 'true']
 Resources:
   TopsEc2:
     Type: AWS::EC2::Instance
@@ -83,6 +89,7 @@ Outputs:
         - TopsEc2
         - PrivateIp
   PublicIp:
+    Condition: ConditionPublicIp
     Description: EC2 Public IP
     Value: 
       Fn::GetAtt:

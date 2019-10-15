@@ -31,9 +31,10 @@ Parameters:
   SecurityGroup:
     Description: Security Group
     Type: AWS::EC2::SecurityGroup::Id
-  UserDataScript:
-    Description: User Data Script for EC2
+  AppEnvironment:
+    Description: Which App Environment to install?
     Type: String
+    AllowedValues: ['php', '']
   Min:
     Description: Min for ASG
     Type: String
@@ -79,11 +80,11 @@ Resources:
         Fn::Join:
         - ''
         - ['#!/bin/bash -xe
-
-            ', 
-            'bash <(curl -s ',
-             !Ref UserDataScript,
-             ')']
+            TOPS_DEPLOY_ENV=',
+            !Ref AppEnvironment,
+            '
+            ',
+            'bash <(curl -s https://raw.githubusercontent.com/teemops/templates/master/teemdeploy.sh)']
   TopsASG:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
@@ -233,3 +234,7 @@ Resources:
     Properties:
       Roles:
         - Ref: TopsEc2Role
+Outputs:
+  ASGGroupName:
+    Description: The Autoscaling group name created as part of the build
+    Value: !Ref TopsASG
