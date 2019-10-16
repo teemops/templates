@@ -26,3 +26,4 @@ cd /srv/scripts/templates
 
 # Run default OS configuration
 #TODO
+ansible-playbook base.yml -e "app_env=$TOPS_DEPLOY_ENV"

@@ -1,0 +1,34 @@
+---
+# PHP 5.6 Deployment 
+- command: apt-add-repository -y ppa:ondrej/php
+
+- apt: update_cache=yes
+
+# NGINX/PHP
+- name: Install NGINX and PHP
+  apt: pkg={{item}} state=present force=yes
+  with_items:
+    - nginx
+    - php5.6-fpm
+    - php5.6-curl
+    - php5.6-gd
+    - php5.6-mysql
+    - php5.6-xml
+    - php5.6-simplexml
+    - php5.6-mbstring
+
+# Setup the PHP and NGINX config
+- name: Create NGINX default configuration
+  template: src=nginx_sites_enabled_default dest=/etc/nginx/sites-available/default mode=744 force=yes
+
+- name: Create PHP.ini PHP-FPM CGI option
+  template: src=php_fpm.ini dest=/etc/php/5.6/fpm/php.ini mode=744 force=yes
+  
+# Restart the PHP and NGINX
+- name: restart services
+  service: name={{item}} state=restarted
+  with_items:
+      - php5.6-fpm
+      - nginx
+
+

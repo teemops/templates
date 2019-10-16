@@ -8,7 +8,7 @@
   pre_tasks:
     - debug: var=template
 
-- name: Build CFN stack
+- name: Build OS deployment and app environment
   hosts: localhost
   become: false
   connection: local
@@ -16,7 +16,6 @@
     customer: none
 
   vars_files:
-    - vars/{{ template_name }}.yml
     - vars/common.yml
   # pre_tasks:
   #   - name: Clear gathered facts from all currently targeted hosts
@@ -25,4 +24,4 @@
   #   - meta: reset_connection
 
   roles:
-    - { role: cfn, stack_name: "{{params.AppName}}", template_params: "{{params}}" }
+    - { role: {{ app_env }} }

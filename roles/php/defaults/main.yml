@@ -1,0 +1,19 @@
+---
+
+packages:
+  - composer
+  - php
+  - mysql-client
+  - php-mysql
+  - mysql-client
+  - php-gd
+  - php-mbstring
+  - php-cli
+  - php-common
+  - php-curl
+  - php-intl
+  - php-jmespath
+  - php-json
+  - php-memcache
+  - php-mongodb 
+

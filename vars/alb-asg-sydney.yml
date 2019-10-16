@@ -7,7 +7,7 @@ params:
   AppId: 123
   AppName: TestASGALBLaunch
   CustomerId: 1
-  InstanceType: t3.nano
+  InstanceType: t3.small
   KeyPair: teemops-67
   RootVolumeSize: 50
   SecurityGroup: sg-ee958b8a

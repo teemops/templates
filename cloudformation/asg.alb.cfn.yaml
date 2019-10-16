@@ -80,11 +80,14 @@ Resources:
         Fn::Join:
         - ''
         - ['#!/bin/bash -xe
-            TOPS_DEPLOY_ENV=',
+
+          ',
+          'TOPS_DEPLOY_ENV=',
             !Ref AppEnvironment,
             '
+            
             ',
-            'bash <(curl -s https://raw.githubusercontent.com/teemops/templates/master/teemdeploy.sh)']
+            'bash <(curl -s https://raw.githubusercontent.com/teemops/templates/master/scripts/teemdeploy.sh)']
   TopsASG:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
@@ -94,11 +97,21 @@ Resources:
       MaxSize: !Ref Max
       TargetGroupARNs:
         - !Ref TopsTargetGroup
+      Tags:
+        - Key: Name
+          Value: !Ref AppName
+          PropagateAtLaunch: true
+        - Key: topsid
+          Value: !Ref AppId
+          PropagateAtLaunch: true
+        - Key: topscustomerid
+          Value: !Ref CustomerId
+          PropagateAtLaunch: true
     UpdatePolicy:
       AutoScalingRollingUpdate:
         MinInstancesInService: 1
         MaxBatchSize: 1
-        PauseTime: PT15M
+        PauseTime: PT10M
         WaitOnResourceSignals: false
   TopsTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
