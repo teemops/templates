@@ -7,7 +7,7 @@
 - name: install packages
   apt: 
     name: "{{packages}}"
-    state: installed
+    state: present
     update_cache: yes
 
 # Setup the PHP and Apache config
