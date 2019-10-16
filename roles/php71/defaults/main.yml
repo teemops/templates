@@ -1,0 +1,21 @@
+---
+
+packages:
+  - composer
+  - php7.1
+  - mysql-client
+  - php7.1-mysql
+  - php7.1-zip
+  - php7.1-mcrypt
+  - mysql-client
+  - php7.1-gd
+  - php7.1-mbstring
+  - php7.1-cli
+  - php7.1-common
+  - php7.1-curl
+  - php7.1-intl
+  - php7.1-jmespath
+  - php7.1-json
+  - php7.1-memcache
+  - php7.1-mongodb
+  - libapache2-mod-php7.1

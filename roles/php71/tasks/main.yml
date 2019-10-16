@@ -1,5 +1,7 @@
 ---
 # PHP 7 Deployment 
+- command: apt-add-repository -y ppa:ondrej/php
+
 - apt: update_cache=yes
 
 - name: install packages

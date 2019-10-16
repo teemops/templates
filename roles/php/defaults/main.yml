@@ -5,6 +5,8 @@ packages:
   - php
   - mysql-client
   - php-mysql
+  - php-zip
+  - php-mcrypt
   - mysql-client
   - php-gd
   - php-mbstring
@@ -16,4 +18,3 @@ packages:
   - php-json
   - php-memcache
   - php-mongodb 
-
