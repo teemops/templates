@@ -24,4 +24,4 @@
   #   - meta: reset_connection
 
   roles:
-    - { role: {{ app_env }} }
+    - { role: "{{ app_env }}" }

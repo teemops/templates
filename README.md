@@ -34,8 +34,14 @@ https://templates.teemops.com.s3-us-west-2.amazonaws.com/cw.notify.child.account
 These are used in the userdata initial build
 example below:
 ```
+bash <(curl -s https://s3-us-west-2.amazonaws.com/templates.teemops.com/teemdeploy.sh)
+```
+or GH (not as reliable on EC2 instances)
+```
 bash <(curl -s https://raw.githubusercontent.com/teemops/templates/master/stacks/php.sh)
 ```
+
+
 
 # Ansible playbook
 This is used for providing base configuration for Ubuntu Teemops managed EC2 instances.

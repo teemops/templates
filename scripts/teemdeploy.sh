@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #Deploys all necessary TeemOps related configuration for Teemops Managed EC2 instances
-apt update
+apt-get update
 apt-get -y install software-properties-common
 apt-add-repository -y ppa:ansible/ansible
-apt update
-apt install ansible
+apt-get update
+apt-get -y install ansible
 
 #AWS Code Deploy Agent
 apt-get -y install ruby wget
