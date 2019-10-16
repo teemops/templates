@@ -9,7 +9,6 @@ apt-get update
 apt-get -y install ansible
 
 #Install standard ansible playbooks
-mkdir /srv
 mkdir /srv/scripts
 git clone https://github.com/teemops/templates.git /srv/scripts/templates
 cd /srv/scripts/templates
