@@ -17,7 +17,5 @@ packages:
   - php7.1-json
   - php7.1-memcache
   - php7.1-mongodb
-  - php7.1-simplexml
   - php7.1-xml
-  - php7.1-dom
   - libapache2-mod-php7.1

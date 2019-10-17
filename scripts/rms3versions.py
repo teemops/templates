@@ -1,4 +1,4 @@
-BUCKET = 'testcbgithub-topss3deploybucket-untdpi50jhuh'
+BUCKET = ''
 
 import boto3
 
