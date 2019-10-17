@@ -5,7 +5,9 @@ template: code.build.cfn.yaml
 params:
   AppId: 123
   AppName: TestCBGitHub
-  GitRepo: https://github.com/teemops/phpawsapi.git
+  GitRepo: https://kiwifellows@bitbucket.org/teemnz/gsdnz.git
+  GitProvider: BITBUCKET
   DeploymentPath: /srv/apps/teemops
   Language: node
-  ASGGroup: TestASGALBLaunch-TopsASG-1KFR5JJR95MDW
+  ASGGroup: TestASGALBLaunch-TopsASG-132W54DCPB7II
+  BuildImage: 'teem/php71'

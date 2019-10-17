@@ -10,6 +10,10 @@ Parameters:
   GitRepo:
     Description: Repo path
     Type: String
+  GitProvider:
+    Description: Git provider eg GITHUB, BitBucket etc...
+    Type: String
+    AllowedValues: ['GITHUB', 'BITBUCKET', 'CODECOMMIT', 'CODEPIPELINE', 'NO_SOURCE', 'S3']
   DeploymentPath:
     Description: Path where code will run
     Type: String
@@ -21,6 +25,10 @@ Parameters:
   ASGGroup:
     Description: Arn of the Autoscaling Group you want to deploy to
     Type: String
+  BuildImage:
+    Description: Build image value used in CodeBuild
+    Type: String
+    Default: 'aws/codebuild/standard:2.0'
 Mappings:
   Langs:
     node:
@@ -66,14 +74,14 @@ Resources:
           - !Ref AppName
       Environment:
         ComputeType: BUILD_GENERAL1_SMALL
-        Image: 'aws/codebuild/standard:2.0'
+        Image: !Ref BuildImage
         Type: LINUX_CONTAINER
       ServiceRole: !GetAtt TopsCodeBuildRole.Arn
       Source:
         Auth:
           Type: OAUTH
         Location: !Ref GitRepo
-        Type: GITHUB
+        Type: !Ref GitProvider
       Triggers:
         Webhook: true
       TimeoutInMinutes: 10
