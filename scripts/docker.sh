@@ -14,5 +14,7 @@ git clone https://github.com/teemops/templates.git /srv/scripts/templates
 cd /srv/scripts/templates
 
 # Run default OS configuration
+#ALWAYS ENSURE WE PULL DOWN LATEST TEMPLATE CODE
+git pull
 #TODO
 ansible-playbook base.yml -e "app_env=$TOPS_DEPLOY_ENV"
