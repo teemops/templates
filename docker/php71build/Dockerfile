@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM node:lts
 
 RUN apt-get update
 RUN apt-get -y install curl git unzip
