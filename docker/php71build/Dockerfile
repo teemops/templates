@@ -1,8 +1,9 @@
 FROM ubuntu
 
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 RUN apt-get update
-RUN apt-get -y install curl git unzip nodejs
+RUN apt-get -y install curl git unzip
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
+RUN apt-get -y install nodejs
 RUN node --version
 RUN npm --version
 ENV TOPS_DEPLOY_ENV=php71
