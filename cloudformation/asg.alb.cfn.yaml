@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Teemops ASG with ALB
+Description: Teemops ASG with ALB - only adds port 80 initially and then port 443 only added when SSL Cert is valid
 Parameters:
   AMI:
     Description: EC2 AMI
@@ -34,7 +34,7 @@ Parameters:
   AppEnvironment:
     Description: Which App Environment to install?
     Type: String
-    AllowedValues: ['php', '']
+    AllowedValues: ['php', 'php71']
   Min:
     Description: Min for ASG
     Type: String
@@ -50,8 +50,14 @@ Parameters:
     Description: ASG instances have Public IP
     Type: String
     AllowedValues: ['true', 'false']
+  HasSSL:
+    Description: Has SSL
+    Type: String
+    AllowedValues: ['true', 'false']
+    Default: 'false'
 Conditions:
   ConditionPublicIp: !Equals [!Ref HasPublicIp, 'true']
+  ConditionSSL: !Equals [!Ref HasSSL, 'true']
 Resources:
   # TopsTopic:
   #   Type: AWS::SNS::Topic

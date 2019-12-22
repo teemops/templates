@@ -28,9 +28,10 @@ Parameters:
   SecurityGroup:
     Description: Security Group
     Type: AWS::EC2::SecurityGroup::Id
-  UserDataScript:
-    Description: User Data Script for EC2
+  AppEnvironment:
+    Description: Which App Environment to install?
     Type: String
+    AllowedValues: ['php', 'node']
   Min:
     Description: Min for ASG
     Type: String
@@ -44,7 +45,7 @@ Parameters:
     Type: String
     AllowedValues: ['true', 'false']
 Conditions:
-  ConditionALB: !Equals [!Ref HasALB, 'true']
+  ConditionPublicIp: !Equals [!Ref HasPublicIp, 'true']
 Resources:
   # TopsTopic:
   #   Type: AWS::SNS::Topic
@@ -73,10 +74,13 @@ Resources:
         - ''
         - ['#!/bin/bash -xe
 
-            ', 
-            'bash <(curl -s ',
-             !Ref UserDataScript,
-             ')']
+            ',
+          'TOPS_DEPLOY_ENV=',
+            !Ref AppEnvironment,
+            '
+            
+            ',
+            'bash <(curl -s https://s3-us-west-2.amazonaws.com/templates.teemops.com/teemdeploy.sh)']
   TopsASG:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
@@ -84,21 +88,29 @@ Resources:
       LaunchConfigurationName: !Ref 'TopsLaunchConfig'
       MinSize: !Ref Min
       MaxSize: !Ref Max
-      # LoadBalancerNames: [!Ref 'TopsALB']
-      # NotificationConfigurations:
-      #   - TopicARN: !Ref 'TopsTopic'
-      #     NotificationTypes: ['autoscaling:EC2_INSTANCE_LAUNCH', 'autoscaling:EC2_INSTANCE_LAUNCH_ERROR',
-      #       'autoscaling:EC2_INSTANCE_TERMINATE', 'autoscaling:EC2_INSTANCE_TERMINATE_ERROR']
-    # CreationPolicy:
-    #   ResourceSignal:
-    #     Timeout: PT15M
-    #     Count: 1
+      Tags:
+        - Key: Name
+          Value: !Ref AppName
+          PropagateAtLaunch: true
+        - Key: topsid
+          Value: !Ref AppId
+          PropagateAtLaunch: true
+        - Key: topscustomerid
+          Value: !Ref CustomerId
+          PropagateAtLaunch: true
     UpdatePolicy:
       AutoScalingRollingUpdate:
         MinInstancesInService: 1
         MaxBatchSize: 1
         PauseTime: PT15M
         WaitOnResourceSignals: false
+  TopsScaleUpPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      AdjustmentType: ChangeInCapacity
+      AutoScalingGroupName: !Ref 'TopsASG'
+      Cooldown: '60'
+      ScalingAdjustment: 1
   TopsScaleDownPolicy:
     Type: AWS::AutoScaling::ScalingPolicy
     Properties:
