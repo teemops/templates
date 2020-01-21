@@ -18,4 +18,3 @@ params:
   Max: 3
   ALBSubnets: "subnet-ea863e8e,subnet-578c2d21,subnet-0a1dcc53"
   HasPublicIp: "true"
-  SSLArn: "arn:aws:acm:ap-southeast-2:163057906376:certificate/a6036490-3627-4de5-9f3e-c334d589f405"

@@ -34,7 +34,8 @@ Parameters:
   AppEnvironment:
     Description: Which App Environment to install?
     Type: String
-    AllowedValues: ['php', 'php71']
+    AllowedValues: ['baseline', 'php', 'php71', 'node']
+    Default: "baseline"
   Min:
     Description: Min for ASG
     Type: String
@@ -50,14 +51,13 @@ Parameters:
     Description: ASG instances have Public IP
     Type: String
     AllowedValues: ['true', 'false']
-  HasSSL:
-    Description: Has SSL
+  SSLArn:
+    Description: Amazon Certificate ARN
     Type: String
-    AllowedValues: ['true', 'false']
-    Default: 'false'
+    Default: 'none'
 Conditions:
   ConditionPublicIp: !Equals [!Ref HasPublicIp, 'true']
-  ConditionSSL: !Equals [!Ref HasSSL, 'true']
+  ConditionSSL: !Not [!Equals [!Ref SSLArn, 'none']]
 Resources:
   # TopsTopic:
   #   Type: AWS::SNS::Topic
@@ -156,6 +156,20 @@ Resources:
       LoadBalancerArn: !Ref 'TopsALB'
       Port: 80
       Protocol: HTTP
+  TopsALBListenerHTTPS:
+    Condition: ConditionSSL
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    DependsOn:
+      - TopsALB
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref 'TopsTargetGroup'
+          Type: 'forward'
+      LoadBalancerArn: !Ref 'TopsALB'
+      Port: 443
+      Protocol: HTTPS
+      Certificates:
+        - CertificateArn: !Ref SSLArn
   TopsALBSG:
     Type: AWS::EC2::SecurityGroup
     Properties:

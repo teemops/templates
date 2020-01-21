@@ -1,0 +1,4 @@
+---
+
+- name: emtpy role for barebones app environments
+  command: "echo test"
