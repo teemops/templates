@@ -14,4 +14,3 @@ RUN cat docker.sh
 RUN chmod +x docker.sh
 RUN bash
 RUN sh docker.sh
-

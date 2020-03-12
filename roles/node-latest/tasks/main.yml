@@ -12,9 +12,6 @@
 - name: Create Apache default configuration
   template: src=000-default.conf dest=/etc/apache2/sites-available/000-default.conf mode=744 force=yes
 
-- name: Enable Apache2 Rewrite module
-  command: a2enmod rewrite
-
 - name: Create PHP.ini
   template: src=php.ini dest=/etc/php/7.2/apache2/php.ini mode=744 force=yes
   

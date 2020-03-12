@@ -21,7 +21,7 @@ Parameters:
   Language:
     Description: Which programming language to build for?
     Type: String
-    AllowedValues: ['node', 'php', 'java', '.net', 'ruby', 'php55', 'php56', 'node8', 'node10', 'node7', 'node6', 'node5', 'java7'] 
+    AllowedValues: ['node', 'php', 'php71', 'java', '.net', 'ruby', 'php55', 'php56', 'node8', 'node10', 'node12', 'node7', 'node6', 'node5', 'java7'] 
   ASGGroup:
     Description: Arn of the Autoscaling Group you want to deploy to
     Type: String
