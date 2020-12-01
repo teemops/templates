@@ -1,0 +1,15 @@
+---
+
+- name: install nginx
+  apt: name=nginx state=installed
+
+- name: put customised nginx.conf file
+  template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
+  notify: restart nginx
+
+- name: put customised /etc/nginx/sites-available/default
+  template: src=default.j2 dest=/etc/nginx/sites-available/default
+  notify: restart nginx
+
+- name: deploy UI content Test file
+  template: src=index.html.j2 dest=/usr/share/nginx/html/index.html

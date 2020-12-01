@@ -1,0 +1,11 @@
+---
+
+port: "80"
+server_name: "localhost"
+root: "/usr/share/nginx/html"
+index: "index.html index.htm"
+apps:
+  - location: api
+    address: localhost
+    port: 8080
+    proxy_pass: api

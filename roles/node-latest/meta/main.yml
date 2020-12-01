@@ -1,3 +1,5 @@
 ---
 dependencies:
   - { role: ansible-role-nodejs }
+  - { role: geerlingguy.nginx }
+  - { role: nginx.confg }

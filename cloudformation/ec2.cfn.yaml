@@ -24,16 +24,16 @@ Parameters:
     Type: AWS::EC2::KeyPair::KeyName
   Subnet:
     Description: Subnet
-    Type: AWS::EC2::Subnet::Id
+    Type: List<AWS::EC2::Subnet::Id>
   SecurityGroup:
     Description: Security Group
     Type: AWS::EC2::SecurityGroup::Id
   HasPublicIp:
     Description: ASG instances have Public IP
     Type: String
-    AllowedValues: ['true', 'false']
+    AllowedValues: ["true", "false"]
 Conditions:
-  ConditionPublicIp: !Equals [!Ref HasPublicIp, 'true']
+  ConditionPublicIp: !Equals [!Ref HasPublicIp, "true"]
 Resources:
   TopsEc2:
     Type: AWS::EC2::Instance
@@ -42,8 +42,8 @@ Resources:
       InstanceType: !Ref InstanceType
       KeyName: !Ref KeyPair
       IamInstanceProfile: !Ref TopsEc2InstanceProfile
-      SubnetId: !Ref Subnet
-      SecurityGroupIds: 
+      SubnetId: !Select [0, !Ref Subnet]
+      SecurityGroupIds:
         - !Ref SecurityGroup
       BlockDeviceMappings:
         - DeviceName: /dev/sda1
@@ -84,14 +84,14 @@ Outputs:
     Value: !Ref TopsEc2
   PrivateIp:
     Description: EC2 Private IP
-    Value: 
+    Value:
       Fn::GetAtt:
         - TopsEc2
         - PrivateIp
   PublicIp:
     Condition: ConditionPublicIp
     Description: EC2 Public IP
-    Value: 
+    Value:
       Fn::GetAtt:
         - TopsEc2
         - PublicIp
