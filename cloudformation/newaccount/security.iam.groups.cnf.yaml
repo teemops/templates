@@ -313,7 +313,7 @@ Resources:
             Action:
               - sts:AssumeRole
             Resource:
-              - !FindInMap [ RoleARN, production, adminro ]
+              - !FindInMap [ RoleARN, production, adminfull ]
 
 
   AssumeProdAdminRORole:
@@ -365,7 +365,7 @@ Resources:
             Action:
               - sts:AssumeRole
             Resource:
-              - !FindInMap [ RoleARN, development, adminro ]
+              - !FindInMap [ RoleARN, development, adminfull ]
 
 
   AssumeDevAdminRORole:
@@ -417,7 +417,7 @@ Resources:
             Action:
               - sts:AssumeRole
             Resource:
-              - !FindInMap [ RoleARN, billing, adminro ]
+              - !FindInMap [ RoleARN, billing, adminfull ]
 
 
   # AssumeBillingAdminRORole:
