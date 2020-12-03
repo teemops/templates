@@ -53,53 +53,44 @@ Mappings:
   # Creation of IAM ARNs for organisation roles
   RoleARN:
     production:
-      adminro: !Join
-        - ''
-        - - 'arn:aws:iam::'
-          - !Ref IAMProdAccountId
-          - :role/CompanyAdminRO
-      adminfull: !Join
-        - ''
-        - - 'arn:aws:iam::'
-          - !Ref IAMProdAccountId
-          - :role/CompanyAdminFull
-      operations: !Join
-        - ''
-        - - 'arn:aws:iam::'
-          - !Ref IAMProdAccountId
-          - :role/CompanyOps
+      adminro: 
+        - !Sub 
+          - 'arn:aws:iam::${AccountID}:role/CompanyAdminRO'
+          - AccountID: !Ref IAMProdAccountId
+      adminfull: 
+        - !Sub 
+          - 'arn:aws:iam::${AccountID}:role/CompanyAdminFull'
+          - AccountID: !Ref IAMProdAccountId
+      operations: 
+        - !Sub 
+          - 'arn:aws:iam::${AccountID}:role/CompanyOps'
+          - AccountID: !Ref IAMProdAccountId
     development:
-      adminro: !Join
-        - ''
-        - - 'arn:aws:iam::'
-          - !Ref IAMDevAccountId
-          - :role/CompanyAdminRO
-      adminfull: !Join
-        - ''
-        - - 'arn:aws:iam::'
-          - !Ref IAMDevAccountId
-          - :role/CompanyAdminFull
-      operations: !Join
-        - ''
-        - - 'arn:aws:iam::'
-          - !Ref IAMDevAccountId
-          - :role/CompanyOps
+      adminro: 
+        - !Sub 
+          - 'arn:aws:iam::${AccountID}:role/CompanyAdminRO'
+          - AccountID: !Ref IAMDevAccountId
+      adminfull: 
+        - !Sub 
+          - 'arn:aws:iam::${AccountID}:role/CompanyAdminFull'
+          - AccountID: !Ref IAMDevAccountId
+      operations: 
+        - !Sub 
+          - 'arn:aws:iam::${AccountID}:role/CompanyOps'
+          - AccountID: !Ref IAMDevAccountId
     billing:
-      # adminro: !Join
-      #   - ''
-      #   - - 'arn:aws:iam::'
-      #     - !Ref IAMBillingAccountId
-      #     - :role/CompanyAdminRO
-      adminfull: !Join
-        - ''
-        - - 'arn:aws:iam::'
-          - !Ref IAMBillingAccountId
-          - :role/CompanyBilling
-      # operations: !Join
-      #   - ''
-      #   - - 'arn:aws:iam::'
-      #     - !Ref IAMBillingAccountId
-      #     - :role/CompanyOps
+      # adminro: 
+      #   - !Sub 
+      #     - 'arn:aws:iam::${AccountID}:role/CompanyAdminRO'
+      #     - AccountID: !Ref IAMBillingAccountId
+      adminfull: 
+        - !Sub 
+          - 'arn:aws:iam::${AccountID}:role/CompanyBilling'
+          - AccountID: !Ref IAMBillingAccountId
+      # operations: 
+      #   - !Sub 
+      #     - 'arn:aws:iam::${AccountID}:role/CompanyOps'
+      #     - AccountID: !Ref IAMBillingAccountId
 
 Resources: 
 
