@@ -32,6 +32,9 @@ Child Account(s): https://templates.teemops.com.s3-us-west-2.amazonaws.com/iam.r
 IAM Standard New Account Roles:
 https://templates.teemops.com.s3-us-west-2.amazonaws.com/newaccount/newaccount.iam.roles.cfn.yaml
 
+IAM Security Account Roles:
+https://templates.teemops.com.s3-us-west-2.amazonaws.com/newaccount/security.iam.groups.cfn.yaml
+
 Cloudwatch event templates: (These are only created in each region the first time a launch config is added for a region)
 https://templates.teemops.com.s3-us-west-2.amazonaws.com/cw.notify.child.account.cfn.yaml
 

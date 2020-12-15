@@ -303,8 +303,9 @@ Resources:
             Effect: Allow
             Action:
               - sts:AssumeRole
-            Resource:
-              - !FindInMap [ RoleARN, production, adminfull ]
+            Resource: !Sub 
+              - 'arn:aws:iam::${AccountID}:role/CompanyAdminFull'
+              - AccountID: !Ref IAMProdAccountId
 
 
   AssumeProdAdminRORole:
@@ -320,8 +321,9 @@ Resources:
             Effect: Allow
             Action:
               - sts:AssumeRole
-            Resource:
-              - !FindInMap [ RoleARN, production, adminro ]
+            Resource: !Sub 
+              - 'arn:aws:iam::${AccountID}:role/CompanyAdminRO'
+              - AccountID: !Ref IAMProdAccountId
 
   AssumeProdOpsRole:
     Type: AWS::IAM::Policy
@@ -336,8 +338,9 @@ Resources:
             Effect: Allow
             Action:
               - sts:AssumeRole
-            Resource:
-              - !FindInMap [ RoleARN, production, operations ]
+            Resource: !Sub 
+              - 'arn:aws:iam::${AccountID}:role/CompanyOps'
+              - AccountID: !Ref IAMProdAccountId
 
 
   # ---- DEV ----
@@ -355,8 +358,9 @@ Resources:
             Effect: Allow
             Action:
               - sts:AssumeRole
-            Resource:
-              - !FindInMap [ RoleARN, development, adminfull ]
+            Resource: !Sub 
+              - 'arn:aws:iam::${AccountID}:role/CompanyAdminFull'
+              - AccountID: !Ref IAMDevAccountId
 
 
   AssumeDevAdminRORole:
@@ -372,8 +376,9 @@ Resources:
             Effect: Allow
             Action:
               - sts:AssumeRole
-            Resource:
-              - !FindInMap [ RoleARN, development, adminro ]
+            Resource: !Sub 
+              - 'arn:aws:iam::${AccountID}:role/CompanyAdminRO'
+              - AccountID: !Ref IAMDevAccountId
 
   AssumeDevOpsRole:
     Type: AWS::IAM::Policy
@@ -388,8 +393,9 @@ Resources:
             Effect: Allow
             Action:
               - sts:AssumeRole
-            Resource:
-              - !FindInMap [ RoleARN, development, operations ]
+            Resource: !Sub 
+              - 'arn:aws:iam::${AccountID}:role/CompanyOps'
+              - AccountID: !Ref IAMDevAccountId
 
 
   # ---- BILLING ----
@@ -407,8 +413,9 @@ Resources:
             Effect: Allow
             Action:
               - sts:AssumeRole
-            Resource:
-              - !FindInMap [ RoleARN, billing, adminfull ]
+            Resource: !Sub 
+              - 'arn:aws:iam::${AccountID}:role/CompanyBilling'
+              - AccountID: !Ref IAMBillingAccountId
 
 
   # AssumeBillingAdminRORole:

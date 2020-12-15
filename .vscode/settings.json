@@ -1,20 +1,22 @@
 {
     "python.pythonPath": "/usr/local/bin/python3",
     "workbench.colorCustomizations": {
-        "activityBar.activeBackground": "#b6f095",
-        "activityBar.activeBorder": "#739feb",
-        "activityBar.background": "#b6f095",
+        "activityBar.activeBackground": "#c79a54",
+        "activityBar.activeBorder": "#277858",
+        "activityBar.background": "#c79a54",
         "activityBar.foreground": "#15202b",
         "activityBar.inactiveForeground": "#15202b99",
-        "activityBarBadge.background": "#739feb",
-        "activityBarBadge.foreground": "#15202b",
-        "statusBar.background": "#97e969",
+        "activityBarBadge.background": "#277858",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "statusBar.background": "#af8139",
         "statusBar.foreground": "#15202b",
-        "statusBarItem.hoverBackground": "#78e23d",
-        "titleBar.activeBackground": "#97e969",
+        "statusBarItem.hoverBackground": "#89652c",
+        "titleBar.activeBackground": "#af8139",
         "titleBar.activeForeground": "#15202b",
-        "titleBar.inactiveBackground": "#97e96999",
-        "titleBar.inactiveForeground": "#15202b99"
+        "titleBar.inactiveBackground": "#af813999",
+        "titleBar.inactiveForeground": "#15202b99",
+        "statusBar.border": "#af8139",
+        "titleBar.border": "#af8139"
     },
     "peacock.color": "#af8139",
     "peacock.remoteColor": "#97e969"
