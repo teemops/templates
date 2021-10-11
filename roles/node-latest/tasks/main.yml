@@ -1,15 +1,6 @@
 ---
 
-# PHP 7 Deployment 
-- apt: update_cache=yes
-
-- name: install packages
-  apt: 
-    name: "{{packages}}"
-    state: installed
-    update_cache: yes
-
-# Setup the PHP and Apache config
+# Setup the NGINX Config
 - name: Create Apache default configuration
   template: src=000-default.conf dest=/etc/apache2/sites-available/000-default.conf mode=744 force=yes
 

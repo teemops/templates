@@ -5,12 +5,12 @@ template: ec2.cfn.yaml
 params:
   AMI: "ami-00a54827eb7ffcd3c"
   AppId: 123
-  AppName: teemops-test-ec2
+  AppName: teemops-test-eip
   CustomerId: 1
   InstanceType: t3.nano
   KeyPair: teemops-67
   RootVolumeSize: 50
   SecurityGroup: sg-ee958b8a
   Subnet: subnet-ea863e8e
-  HasPublicIp: 'false'
-  HasElasticIp: 'false'
+  HasPublicIp: 'true'
+  HasElasticIp: 'true'

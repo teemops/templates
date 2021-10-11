@@ -32,9 +32,25 @@ Parameters:
     Description: ASG instances have Public IP
     Type: String
     AllowedValues: ["true", "false"]
+  HasElasticIp:
+    Description: EC2 instance has Elastic IP
+    Type: String
+    AllowedValues: ["true", "false"]
 Conditions:
   ConditionPublicIp: !Equals [!Ref HasPublicIp, "true"]
+  ConditionElasticIp: !Equals [!Ref HasElasticIp, "true"]
 Resources:
+  TopsElasticIp:
+    Type: AWS::EC2::EIP
+    Condition: ConditionElasticIp
+    DependsOn: TopsEc2
+    Properties:
+      InstanceId: !Ref TopsEc2
+      Tags:
+        - Key: Name
+          Value: !Ref AppName
+        - Key: topsid
+          Value: !Ref AppId
   TopsEc2:
     Type: AWS::EC2::Instance
     Properties:
@@ -42,9 +58,12 @@ Resources:
       InstanceType: !Ref InstanceType
       KeyName: !Ref KeyPair
       IamInstanceProfile: !Ref TopsEc2InstanceProfile
-      SubnetId: !Select [0, !Ref Subnet]
-      SecurityGroupIds:
-        - !Ref SecurityGroup
+      NetworkInterfaces: 
+        - AssociatePublicIpAddress: !Ref HasPublicIp
+          DeviceIndex: "0"
+          GroupSet: 
+            - !Ref SecurityGroup
+          SubnetId: !Select [0, !Ref Subnet]
       BlockDeviceMappings:
         - DeviceName: /dev/sda1
           Ebs:
