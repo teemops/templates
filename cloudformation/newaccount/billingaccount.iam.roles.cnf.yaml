@@ -23,7 +23,7 @@ Resources:
   # Cross Account ROLES
   # ----------------------------------
 
-  # Company Admin Read-Only
+  # Company Billing
   CompanyBilling:
     Type: "AWS::IAM::Role"
     Properties:
@@ -48,7 +48,7 @@ Resources:
 
   # USER
 
-  # Company Admin Read-Only Deny Policy
+  # Company Billing Policy
   CompanyBillingPolicy:
     Type: "AWS::IAM::Policy"
     Properties:

@@ -110,3 +110,8 @@ https://templates.teemops.com.s3-us-west-2.amazonaws.com/ecs.alb.cfn.yaml
 
 ECS
 https://templates.teemops.com.s3-us-west-2.amazonaws.com/ecs.alb.cfn.yaml
+
+## RDS Database
+
+RDS
+https://templates.teemops.com.s3-us-west-2.amazonaws.com/rds.cfn.yaml
