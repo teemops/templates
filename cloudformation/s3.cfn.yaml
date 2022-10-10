@@ -3,8 +3,8 @@ Description: Teemops S3 Bucket
 Parameters:
   BucketName:
     Type: String
-    Description: The S3 Bucket Name Must be globallu unique
-    AllowedPattern: (?!-)[a-zA-Z0-9-.]{1,63}(?<!-)
+    Description: The S3 Bucket Name must be globally unique
+    AllowedPattern: (?!-)[a-zA-Z0-9-.]{3,63}(?<!-)
     ConstraintDescription: must be a valid Bucket Name
   IsPublic:
     Description: Is Public Bucket?
@@ -17,6 +17,7 @@ Parameters:
 Conditions:
   ConditionPublic: !Equals [!Ref IsPublic, "true"]
   ConditionWebsite: !Equals [!Ref IsWebsite, "true"]
+  ConditionNoWebsite: !Equals [!Ref IsWebsite, "false"]
 Mappings:
   Region2S3WebsiteSuffix:
     us-east-1:
@@ -82,15 +83,25 @@ Mappings:
     us-gov-west-1:
       Suffix: .s3-website-us-gov-west-1.amazonaws.com
 Resources:
-  TopsS3Bucket:
+  TopsS3Bucket: 
+    Condition: ConditionNoWebsite
     Type: AWS::S3::Bucket
     Properties:
+      BucketName: !Ref BucketName
+      AccessControl: !If [ConditionPublic, PublicRead, Private]
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: !If [ConditionPublic, false, true]
+        BlockPublicPolicy: !If [ConditionPublic, false, true]
+        IgnorePublicAcls: !If [ConditionPublic, false, true]
+        RestrictPublicBuckets: !If [ConditionPublic, false, true]      
+  TopsS3BucketWebsite:
+    Condition: ConditionWebsite
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
       AccessControl: !If [ConditionPublic, PublicRead, Private]
       WebsiteConfiguration:
-        !If
-          - ConditionWebsite
-          - - IndexDocument: index.html
-            - ErrorDocument: error.html
-          - ""
+        IndexDocument: index.html
+        ErrorDocument: error.html
   
         

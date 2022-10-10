@@ -20,8 +20,8 @@ Parameters:
     Description: Database Engine
     Type: String
     AllowedValues: ["mariadb", "mysql", "oracle-ee", "oracle-se2", "oracle-se1", "oracle-se", "postgres", "sqlserver-ee", "sqlserver-se", "sqlserver-ex", "sqlserver-web"]
-  DBName:
-    Description: Database Name
+  DBId:
+    Description: RDS Instance Identifier
     Type: String
   DBUser:
     Description: Database User
@@ -62,7 +62,7 @@ Resources:
       CopyTagsToSnapshot: true
       Engine: !Ref DBEngine
       DBInstanceClass: !Ref InstanceType
-      DBInstanceIdentifier: !Ref DBName
+      DBInstanceIdentifier: !Ref DBId
       DBSubnetGroupName: !Ref TopsDBSubnetGroup
       VPCSecurityGroups: !Ref SecurityGroups
       PubliclyAccessible: !Ref HasPublicIp

@@ -1,0 +1,30 @@
+---
+# PHP 7 Deployment 
+- command: apt-add-repository -y ppa:ondrej/php
+
+- apt: update_cache=yes
+
+- name: install packages
+  apt: 
+    name: "{{packages}}"
+    state: present
+    update_cache: yes
+
+# Setup the PHP and Apache config
+- name: Create Apache default configuration
+  template: src=000-default.conf dest=/etc/apache2/sites-available/000-default.conf mode=744 force=yes
+
+- name: Enable Apache2 Rewrite module
+  command: a2enmod rewrite
+
+- name: Create PHP.ini
+  template: src=php.ini dest=/etc/php/7.1/apache2/php.ini mode=744 force=yes
+  
+# Restart Apache
+- name: restart Apache
+  service: 
+    name: apache2 
+    state: restarted
+
+
+

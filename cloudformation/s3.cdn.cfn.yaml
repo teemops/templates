@@ -1,10 +1,14 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Teemops S3 + CloudFront + SSL Cert
 Parameters:
+  HasRoute53:
+    Description: Use an existing Route53 Domain?
+    Type: String
+    AllowedValues: ["true", "false"]
   HostedZone:
     Type: String
     Description: The DNS name of an existing Amazon Route 53 hosted zone
-    AllowedPattern: (?!-)[a-zA-Z0-9-.]{1,63}(?<!-)
+    AllowedPattern: (?!-)[a-zA-Z0-9-.]{0,63}(?<!-)
     ConstraintDescription: must be a valid DNS zone name.
   DomainAlias:
     Type: String
@@ -13,6 +17,8 @@ Parameters:
     ConstraintDescription: must be a valid DNS zone name.
   SSLArn:
     Type: String
+Conditions:
+  ConditionRoute53: !Equals [!Ref HasRoute53, "true"]
 Mappings:
   Region2S3WebsiteSuffix:
     us-east-1:
@@ -78,14 +84,14 @@ Mappings:
     us-gov-west-1:
       Suffix: .s3-website-us-gov-west-1.amazonaws.com
 Resources:
-  S3BucketForWebsiteContent:
+  TopsS3BucketWebsite:
     Type: AWS::S3::Bucket
     Properties:
       AccessControl: PublicRead
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: error.html
-  WebsiteCDN:
+  TopsWebsiteCDN:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
@@ -107,24 +113,24 @@ Resources:
             HTTPPort: '80'
             HTTPSPort: '443'
             OriginProtocolPolicy: http-only
-          DomainName: !Join ['', [!Ref 'S3BucketForWebsiteContent', !FindInMap [Region2S3WebsiteSuffix,
+          DomainName: !Join ['', [!Ref 'TopsS3BucketWebsite', !FindInMap [Region2S3WebsiteSuffix,
                 !Ref 'AWS::Region', Suffix]]]
           Id: only-origin
   WebsiteDNSName:
+    Condition: ConditionRoute53
     Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneName: !Join ['', [!Ref 'HostedZone', .]]
       Comment: CNAME redirect custom name to CloudFront distribution
-      Name: !Join ['', [!Ref 'AWS::StackName', !Ref 'AWS::AccountId', ., !Ref 'AWS::Region',
-          ., !Ref 'HostedZone']]
+      Name: !Ref DomainAlias
       Type: CNAME
       TTL: '900'
       ResourceRecords:
-      - !GetAtt [WebsiteCDN, DomainName]
+      - !GetAtt [TopsWebsiteCDN, DomainName]
 Outputs:
   WebsiteURL:
-    Value: !Join ['', ['http://', !Ref 'WebsiteDNSName']]
+    Value: !Join ['', ['https://', !Ref 'DomainAlias']]
     Description: The URL of the newly created website
   BucketName:
-    Value: !Ref 'S3BucketForWebsiteContent'
+    Value: !Ref 'TopsS3BucketWebsite'
     Description: Name of S3 bucket to hold website content

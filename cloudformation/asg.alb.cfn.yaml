@@ -34,7 +34,7 @@ Parameters:
   AppEnvironment:
     Description: Which App Environment to install?
     Type: String
-    AllowedValues: ['baseline', 'php', 'php71', 'node']
+    AllowedValues: ['baseline', 'php', 'php71', 'node', 'php8']
     Default: "baseline"
   Min:
     Description: Min for ASG
