@@ -4,7 +4,7 @@ packages:
   - composer
   - php
   - mysql-client
-  - ph-mysql
+  - php-mysql
   - php-zip
   - php-mcrypt
   - mysql-client
