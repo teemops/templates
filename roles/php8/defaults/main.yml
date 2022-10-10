@@ -7,7 +7,6 @@ packages:
   - php-mysql
   - php-zip
   - php-mcrypt
-  - mysql-client
   - php-gd
   - php-mbstring
   - php-cli

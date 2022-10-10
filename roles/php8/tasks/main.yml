@@ -1,5 +1,5 @@
 ---
-# PHP 7 Deployment 
+# PHP 8 Deployment 
 - command: apt-add-repository -y ppa:ondrej/php
 
 - apt: update_cache=yes
@@ -18,7 +18,7 @@
   command: a2enmod rewrite
 
 - name: Create PHP.ini
-  template: src=php.ini dest=/etc/php/7.1/apache2/php.ini mode=744 force=yes
+  template: src=php.ini dest=/etc/php/8.1/apache2/php.ini mode=744 force=yes
   
 # Restart Apache
 - name: restart Apache
