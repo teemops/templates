@@ -18,7 +18,7 @@
   command: a2enmod rewrite
 
 - name: Create PHP.ini
-  template: src=php.ini dest=/etc/php/8.1/apache2/php.ini mode=744 force=yes
+  template: src=php.ini dest=/etc/php/8.0/apache2/php.ini mode=744 force=yes
   
 # Restart Apache
 - name: restart Apache
