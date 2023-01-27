@@ -1,8 +1,10 @@
 ---
 
 packages:
+  - nginx
   - composer
   - php
+  - php-fpm
   - mysql-client
   - php-mysql
   - php-zip
