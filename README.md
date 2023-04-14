@@ -42,8 +42,17 @@ Cloud Config and Audit templates
 https://templates.teemops.com.s3-us-west-2.amazonaws.com/cloudconfig.cfn.yaml
 https://templates.teemops.com.s3-us-west-2.amazonaws.com/cloudtrail.cfn.yaml
 
+https://console.aws.amazon.com/cloudformation/home?#/stacks/quickcreate?templateUrl=https://s3-ap-southeast-2.amazonaws.com/templates.nzs.cloud/cloudconfig.cfn.yaml&stackName=tops-audit-config
+
 DLM Lifecycle Policy:
 https://templates.teemops.com.s3-us-west-2.amazonaws.com/newaccount/dlm.lifecycle.policy.cfn.yaml
+
+Continuous Auditing:
+https://console.aws.amazon.com/cloudformation/home?#/stacks/quickcreate?templateUrl=https://s3-ap-southeast-2.amazonaws.com/templates.nzs.cloud/audit/tops.audit.setup.yaml&stackName=tops-audit-monitoring
+
+# Conformance Pack Samples
+
+https://console.aws.amazon.com/cloudformation/home?#/stacks/quickcreate?templateUrl=https://s3-ap-southeast-2.amazonaws.com/templates.nzs.cloud/audit/_config/awslabs/aws-config-rules/aws-config-conformance-packs/Operational-Best-Practices-for-CIS.yaml&stackName=tops-audit-pack-cis
 
 # Launch scripts
 

@@ -1,0 +1,55 @@
+#This template can only be run after the tops cloud audit role has been added to customer account
+AWSTemplateFormatVersion: 2010-09-09
+Description: "Creates a central S3 Bucket and Config setup for Centralised Config Logging"
+# Parameters:
+#   IncludeGlobalResourceTypes:
+#     Type: String
+#     AllowedValues:
+#       - "true"
+#       - "false"
+#     Description: "Production account"
+# Condition: ${1||}
+Resources:
+  # Build AWS Config Recorder
+  ConfigRecorder:
+    Type: "AWS::Config::ConfigurationRecorder"
+    Properties:
+      Name: "ConfigRecorder"
+      RecordingGroup:
+        AllSupported: true
+        IncludeGlobalResourceTypes: true
+      RoleARN: !Join
+        - ""
+        - - "arn:aws:iam::"
+          - !Ref "AWS::AccountId"
+          - ":role/"
+          - "tops-config-role"
+
+  # Create Config Delivery Channel
+  #https://docs.aws.amazon.com/config/latest/APIReference/API_PutDeliveryChannel.html
+  DeliveryChannel:
+    Type: "AWS::Config::DeliveryChannel"
+    Properties:
+      S3BucketName: !Sub "tops-config-audit-${AWS::AccountId}"
+      # S3KeyPrefix: tops
+      # S3KmsKeyArn: !Join
+      #   - ""
+      #   - - "arn:aws:kms:"
+      #     - !Ref "AWS::Region"
+      #     - ":"
+      #     - !Ref "AWS::AccountId"
+      #     - ":alias/"
+      #     - "tops-audit"
+      ConfigSnapshotDeliveryProperties:
+        DeliveryFrequency: "Six_Hours"
+      Name: "TopsConfigDeliveryChannel"
+
+Outputs:
+  ConfigRecorder:
+    Description: "Config Recorder"
+    Value:
+      Ref: "ConfigRecorder"
+  DeliveryChannel:
+    Description: "Config Delivery Channel"
+    Value:
+      Ref: "DeliveryChannel"
