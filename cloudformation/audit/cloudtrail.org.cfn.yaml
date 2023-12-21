@@ -1,4 +1,6 @@
+# CloudTrail for AWS Organization
 # Copyright [2018] [Phil Chen]
+# Modified by Ben Fellows (2023) for Organizations use.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -6,20 +8,16 @@
 
 #    http://www.apache.org/licenses/LICENSE-2.0
 
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 AWSTemplateFormatVersion: 2010-09-09
 
 Description: "The AWS CloudFormation template creates KMS encryption keys for CloudTrail and S3, an encrypted S3 bucket, and enables CloudTrail for the account"
 
 Resources:
   # Create KMS CloudTrail encryption key
-  cloudtrailKey:
+  TopsCloudTrailKey:
     Type: AWS::KMS::Key
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Retain
     Properties:
       KeyPolicy:
         Version: 2012-10-17
@@ -88,19 +86,26 @@ Resources:
                 "kms:CallerAccount": !Sub "${AWS::AccountId}"
               StringLike:
                 "kms:EncryptionContext:aws:cloudtrail:arn": !Sub "arn:aws:cloudtrail:*:${AWS::AccountId}:trail/*"
+      Tags:
+        - Key: "Name"
+          Value: "TopsCloudTrailKey"
+        - Key: "Environment"
+          Value: "Audit"
+        - Key: "CreatedBy"
+          Value: "tops"
 
-  cloudtrailKeyAlias:
+  TopsCloudTrailKeyAlias:
     Type: AWS::KMS::Alias
     Properties:
       AliasName: alias/cloudtrail
       TargetKeyId:
-        Ref: cloudtrailKey
+        Ref: TopsCloudTrailKey
 
   # Create KMS CloudTrail S3 bucket encryption key
-  s3CloudTrailKey:
-    DeletionPolicy: Retain
-    UpdateReplacePolicy: Retain
+  Topss3CloudTrailKey:
     Type: AWS::KMS::Key
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Retain
     Properties:
       KeyPolicy:
         Version: 2012-10-17
@@ -123,33 +128,61 @@ Resources:
                 - delivery.logs.amazonaws.com
             Action: "kms:GenerateDataKey*"
             Resource: "*"
+          - Sid: Allow Cloudtrail to use the key
+            Effect: Allow
+            Principal:
+              Service:
+                - cloudtrail.amazonaws.com
+            Action: "kms:GenerateDataKey*"
+            Resource: "*"
+          - Sid: Allow CloudTrail to describe key
+            Effect: Allow
+            Principal:
+              Service:
+                - cloudtrail.amazonaws.com
+            Action: "kms:DescribeKey"
+            Resource: "*"
+      Tags:
+        - Key: "Name"
+          Value: "TopsCloudTrailKey"
+        - Key: "Environment"
+          Value: "Audit"
+        - Key: "CreatedBy"
+          Value: "tops"
 
-  s3CloudTrailKeyAlias:
+  Topss3CloudTrailKeyAlias:
     Type: AWS::KMS::Alias
     Properties:
       AliasName: alias/cloudtrails3
       TargetKeyId:
-        Ref: s3CloudTrailKey
+        Ref: Topss3CloudTrailKey
 
   # Create CloudTrail encrypted S3 bucket for storage
-  CloudTrailS3Bucket:
+  TopsCloudTrailS3Bucket:
+    DeletionPolicy: Delete
     UpdateReplacePolicy: Retain
     DependsOn:
-      - s3CloudTrailKey
-      - s3CloudTrailKeyAlias
+      - Topss3CloudTrailKey
+      - Topss3CloudTrailKeyAlias
     Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
     Properties:
       BucketEncryption:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
               SSEAlgorithm: "aws:kms"
-              KMSMasterKeyID: !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:${s3CloudTrailKeyAlias}"
+              KMSMasterKeyID: !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:${Topss3CloudTrailKeyAlias}"
+      Tags:
+        - Key: "Name"
+          Value: "TopsCloudTrailS3Bucket"
+        - Key: "Environment"
+          Value: "Audit"
+        - Key: "CreatedBy"
+          Value: "tops"
 
-  CloudTrailBucketPolicy:
+  TopsCloudTrailBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: !Ref CloudTrailS3Bucket
+      Bucket: !Ref TopsCloudTrailS3Bucket
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -158,45 +191,59 @@ Resources:
             Principal:
               Service: "cloudtrail.amazonaws.com"
             Action: "s3:GetBucketAcl"
-            Resource: !Sub arn:aws:s3:::${CloudTrailS3Bucket}
+            Resource: !Sub arn:aws:s3:::${TopsCloudTrailS3Bucket}
           - Sid: "AWSCloudTrailWrite"
             Effect: Allow
             Principal:
               Service: "cloudtrail.amazonaws.com"
             Action: "s3:PutObject"
-            Resource: !Sub arn:aws:s3:::${CloudTrailS3Bucket}/AWSLogs/${AWS::AccountId}/*
+            Resource: !Sub arn:aws:s3:::${TopsCloudTrailS3Bucket}/AWSLogs/${AWS::AccountId}/*
             Condition:
               StringEquals:
                 "s3:x-amz-acl": "bucket-owner-full-control"
+          - Sid: "AWSCloudTrailReadOnlyAccess"
+            Effect: Allow
+            Principal:
+              Service: "cloudtrail.amazonaws.com"
+            Action: "s3:GetObject"
+            Resource: !Sub arn:aws:s3:::${TopsCloudTrailS3Bucket}/AWSLogs/${AWS::AccountId}/*
 
   # Enable CloudTrail
-  MyCloudTrail:
+  TopsCloudTrail:
     DependsOn:
-      - CloudTrailBucketPolicy
+      - TopsCloudTrailBucketPolicy
     Type: AWS::CloudTrail::Trail
     Properties:
-      S3BucketName: !Ref CloudTrailS3Bucket
+      IsOrganizationTrail: true
+      S3BucketName: !Ref TopsCloudTrailS3Bucket
       IsLogging: true
-      KMSKeyId: !GetAtt cloudtrailKey.Arn
+      KMSKeyId: !GetAtt TopsCloudTrailKey.Arn
+      Tags:
+        - Key: "Name"
+          Value: "TopsCloudTrail"
+        - Key: "Environment"
+          Value: "Audit"
+        - Key: "CreatedBy"
+          Value: "tops"
 
 Outputs:
   CloudTrailKMSKeyAlias:
     Description: "CloudTrail KMS Key Alias"
     Value:
-      Ref: "cloudtrailKeyAlias"
+      Ref: "TopsCloudTrailKeyAlias"
   S3KMSKeyAlias:
     Description: "S3 KMS Key Alias"
     Value:
-      Ref: "s3CloudTrailKeyAlias"
+      Ref: "Topss3CloudTrailKeyAlias"
   CloudTrailS3Bucket:
     Description: "Encrypted S3 Bucket for CloudTrail Logs"
     Value:
-      Ref: "CloudTrailS3Bucket"
+      Ref: "TopsCloudTrailS3Bucket"
   CloudTrailS3BucketPolicy:
     Description: "S3 Bucket Policy for CloudTrail Logs"
     Value:
-      Ref: "CloudTrailBucketPolicy"
+      Ref: "TopsCloudTrailBucketPolicy"
   CloudTrail:
     Description: "CloudTrail"
     Value:
-      Ref: "MyCloudTrail"
+      Ref: "TopsCloudTrail"

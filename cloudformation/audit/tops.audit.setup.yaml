@@ -1,23 +1,46 @@
 #This template can only be run after the tops cloud audit role has been added to customer account
+#via the teemops iam.role.audit.account.cfn.yaml template
 AWSTemplateFormatVersion: 2010-09-09
-Description: "Creates a central S3 Bucket and Config setup for Centralised Config Logging"
-# Parameters:
-#   IncludeGlobalResourceTypes:
-#     Type: String
-#     AllowedValues:
-#       - "true"
-#       - "false"
-#     Description: "Production account"
-# Condition: ${1||}
+Description: "Creates a Config setup for Centralised Config Logging"
+Parameters:
+  GlobalResourceTypesRegion:
+    Type: String
+    Default: us-east-1
+    Description: AWS region used to record global resources types
+  AggregatorAccount:
+    Type: String
+    Description: Account ID of the aggregator
+  AggregatorRegion:
+    Type: String
+    Default: ap-southeast-2
+    Description: AWS region of the aggregator
+Conditions:
+  IncludeGlobalResourceTypes: !Equals
+    - !Ref GlobalResourceTypesRegion
+    - !Ref AWS::Region
+  CreateAggregator: !And
+    - !Equals
+      - !Ref AggregatorAccount
+      - !Ref AWS::AccountId
+    - !Equals
+      - !Ref AggregatorRegion
+      - !Ref AWS::Region
+  CreateAuthorization: !Not
+    - !Equals
+      - !Ref AggregatorAccount
+      - !Ref AWS::AccountId
 Resources:
-  # Build AWS Config Recorder
+  # Build AWS Config Recorder and use IAM role already created buy
   ConfigRecorder:
     Type: "AWS::Config::ConfigurationRecorder"
     Properties:
       Name: "ConfigRecorder"
       RecordingGroup:
         AllSupported: true
-        IncludeGlobalResourceTypes: true
+        IncludeGlobalResourceTypes: !If
+          - IncludeGlobalResourceTypes
+          - True
+          - False
       RoleARN: !Join
         - ""
         - - "arn:aws:iam::"
@@ -31,18 +54,35 @@ Resources:
     Type: "AWS::Config::DeliveryChannel"
     Properties:
       S3BucketName: !Sub "tops-config-audit-${AWS::AccountId}"
-      # S3KeyPrefix: tops
-      # S3KmsKeyArn: !Join
-      #   - ""
-      #   - - "arn:aws:kms:"
-      #     - !Ref "AWS::Region"
-      #     - ":"
-      #     - !Ref "AWS::AccountId"
-      #     - ":alias/"
-      #     - "tops-audit"
+      S3KeyPrefix: !Join
+        - ""
+        - - "TOPS/"
+          - !Ref "AWS::AccountId"
+          - "/"
+          - !Ref "AWS::Region"
+          - "/Config"
       ConfigSnapshotDeliveryProperties:
-        DeliveryFrequency: "Six_Hours"
+        DeliveryFrequency: "One_Hour"
       Name: "TopsConfigDeliveryChannel"
+  ConfigAggregator:
+    Type: AWS::Config::ConfigurationAggregator
+    Condition: CreateAggregator
+    Properties:
+      ConfigurationAggregatorName: tops-config-aggregator
+      OrganizationAggregationSource:
+        AllAwsRegions: true
+        RoleArn: !Join
+          - ""
+          - - "arn:aws:iam::"
+            - !Ref "AWS::AccountId"
+            - ":role/"
+            - "tops-config-aggregrator-role"
+  AggregationAuthorization:
+    Type: AWS::Config::AggregationAuthorization
+    Condition: CreateAuthorization
+    Properties:
+      AuthorizedAccountId: !Ref AggregatorAccount
+      AuthorizedAwsRegion: !Ref AggregatorRegion
 
 Outputs:
   ConfigRecorder:
