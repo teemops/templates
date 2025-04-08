@@ -42,8 +42,34 @@ Cloud Config and Audit templates
 https://templates.teemops.com.s3-us-west-2.amazonaws.com/cloudconfig.cfn.yaml
 https://templates.teemops.com.s3-us-west-2.amazonaws.com/cloudtrail.cfn.yaml
 
+https://console.aws.amazon.com/cloudformation/home?#/stacks/quickcreate?templateUrl=https://s3-us-west-2.amazonaws.com/templates.auditaws.cloud/cloudconfig.cfn.yaml&stackName=tops-audit-config
+
 DLM Lifecycle Policy:
 https://templates.teemops.com.s3-us-west-2.amazonaws.com/newaccount/dlm.lifecycle.policy.cfn.yaml
+
+Allow Organization account or another account to access CloudFormation StackSets:
+https://s3-us-west-2.amazonaws.com/templates.auditaws.cloud/audit/tops.audit.stackset.organization.yaml
+https://console.aws.amazon.com/cloudformation/home?#/stacks/quickcreate?templateUrl=https://s3-us-west-2.amazonaws.com/templates.auditaws.cloud/audit/tops.audit.setup.yaml&stackName=tops-audit-monitoring
+
+Continuous Auditing without Security Hub:
+https://console.aws.amazon.com/cloudformation/home?#/stacks/quickcreate?templateUrl=https://s3-us-west-2.amazonaws.com/templates.auditaws.cloud/audit/tops.audit.setup.yaml&stackName=tops-audit-monitoring
+
+Security Hub:
+https://console.aws.amazon.com/cloudformation/home?#/stacks/quickcreate?templateUrl=https://s3-us-west-2.amazonaws.com/templates.auditaws.cloud/audit/tops.audit.securityhub.yaml&stackName=tops-audit-securityhub
+
+#Cloudtrail
+https://console.aws.amazon.com/cloudformation/home?#/stacks/quickcreate?templateUrl=https://s3-us-west-2.amazonaws.com/templates.auditaws.cloud/cloudtrail.cfn.yaml&stackName=tops-audit-cloudtrail
+
+#Cloudtrail Organizations
+https://console.aws.amazon.com/cloudformation/home?#/stacks/quickcreate?templateUrl=https://s3-us-west-2.amazonaws.com/templates.auditaws.cloud/audit/cloudtrail.org.cfn.yaml&stackName=tops-audit-cloudtrail-org
+
+# Conformance Pack Samples
+
+https://console.aws.amazon.com/cloudformation/home?#/stacks/quickcreate?templateUrl=https://s3-us-west-2.amazonaws.com/templates.auditaws.cloud/audit/_config/awslabs/aws-config-rules/aws-config-conformance-packs/Operational-Best-Practices-for-CIS.yaml&stackName=tops-audit-pack-cis
+
+Devops:
+
+https://console.aws.amazon.com/cloudformation/home?#/stacks/quickcreate?templateUrl=https://s3-us-west-2.amazonaws.com/templates.auditaws.cloud/audit/_config/awslabs/aws-config-rules/aws-config-conformance-packs/Operational-Best-Practices-for-DevOps.yaml&stackName=tops-audit-pack-devops
 
 # Launch scripts
 
